@@ -1,0 +1,51 @@
+<html>
+<body>
+	What's the Weather
+	Location: <input name="location" id="location" type="text"></input><br/>
+	Weather Channel<input name="provider" type="radio" value="WCService"/>
+	Yahoo Weather<input name="provider" type="radio" value="YWService"/><br/>
+	<button>Get Forecast</button>
+	<div id="response"></div>
+
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+	<script>
+		$(function() {
+			
+			$.ajax({
+				url:"/weatherWatch/services/forecast/config",
+				type: "GET",
+				success: function(json){
+					console.log(json);
+					$('[name=location]').val(json.location);
+					$('[name=provider]').val(json.provider);
+				}
+			})
+			
+			function getForecast(){
+				$.ajax({
+					url : "/weatherWatch/services/forecast",
+					type : "GET",
+					success : function(xml) {
+						console.log(xml);
+						myXml = xml;
+						/* 
+						var response = "";
+						var orderIds = xml.getElementsByTagName('orderId');
+						for(var idx = 0; idx < orderIds.length; idx++){
+							response += $(orderIds[idx]).html() + "</br>";
+						}
+						$('#response').html(response); 
+						*/
+						
+					}
+				});
+			}
+			
+			$("button").on("click", function() {
+				getForecast();
+			});
+		});
+	</script>
+
+</body>
+</html>
