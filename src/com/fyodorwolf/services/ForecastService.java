@@ -7,8 +7,8 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-
-import org.json.simple.JSONValue;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.FormParam;
 
 import com.fyodorwolf.domain.ForecastFactory;
 import com.fyodorwolf.domain.Forecast;
@@ -22,33 +22,30 @@ public class ForecastService {
 
 	
 	@GET
-   	@Produces("application/xml")
+   	@Produces(MediaType.APPLICATION_JSON)
 	public Forecast getForcast(){
 		return ForecastFactory.getForcast(provider, location);
 	}
 	
 	@GET
 	@Path("/config")
-    @Produces("text/plain")
-	public String getConfig(){
+   	@Produces(MediaType.APPLICATION_JSON)
+	public HashMap<String, String> getConfig(){
 		HashMap<String, String> json = new HashMap<String, String>();
 		json.put("location",location);
 		json.put("provider", ForecastFactory.providers[provider]);
-		return JSONValue.toJSONString(json);
+		return json;
 	}
 
 	@POST
-    @Consumes("text/plain")
-    @Produces("text/plain")
-	public Forecast setProvider(){
-		return ForecastFactory.getForcast(provider, location);
-	}
-	
-	@POST
-    @Consumes("text/plain")
-    @Produces("text/plain")
-	public Forecast setLocation(){
-		return ForecastFactory.getForcast(provider, location);
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Path("/config")
+	public void setConfig(@FormParam("provider") String provider, @FormParam("location") String location){
+		int providerId = ForecastFactory.get_provider_id(provider);
+		if(providerId < 0) return;
+		this.location = location;
+		this.provider = providerId;
+		System.out.println("setConfig "+ ForecastFactory.providers[providerId] + "," + this.location);
 	}
 	
 }

@@ -18,5 +18,12 @@ public class ForecastFactory {
 		}
 		return extForcastService.getforcast(location);
 	}
+	
+	public static int get_provider_id(String provider){
+		for(int idx = 0; idx<providers.length; idx++){
+			if(provider.equals(providers[idx])) return idx;
+		}
+		return -1;
+	}
 			
 }
