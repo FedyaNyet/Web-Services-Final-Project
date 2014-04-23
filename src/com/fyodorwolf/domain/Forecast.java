@@ -11,7 +11,10 @@ public class Forecast {
 	
 	public Forecast(){}
 	
-	public Forecast(HashMap<String, String> forecast){
+	public HashMap<String, String> getForcast(){
+		return forecast;
+	}
+	public void  setForcast(HashMap<String, String> forecast){
 		this.forecast = forecast;
 	}
 	

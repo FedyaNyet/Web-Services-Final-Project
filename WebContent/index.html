@@ -27,7 +27,7 @@
 			vertical-align: top;
 			padding-right: 50px;
 		}
-		#location{
+		#zip{
 			padding: 0px;
 			margin: 0px;
 			border: 0px;
@@ -53,7 +53,7 @@
 <body>
 	<header>
 		<h1>#weatherWatch</h1>
-		<div>Location: <input name="location" id="location" type="text"></input></div>
+		<div>Zip: <input name="zip" id="zip" type="text"></input></div>
 		<div>
 			Weather Channel<input name="provider" type="radio" value="WCService"/>
 			Yahoo Weather<input name="provider" type="radio" value="YWService"/><br/>
@@ -63,11 +63,12 @@
 		<div id="map-canvas"></div>
 	</main>
 	
-	
-    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=weather"></script>
+	<!-- 
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=weather"></script> 
+    -->
 	<script src="static/js/jquery-2.0.3.min.js"></script>
 	<script>
-		function initialize() {
+		/* function initialize() {
 		  var mapOptions = {
 		    zoom: 6,
 		    center: new google.maps.LatLng(49.265984,-123.127491)
@@ -86,7 +87,7 @@
 		}
 
 		google.maps.event.addDomListener(window, 'load', initialize);
-	
+	 */
 	
 		function setConfig(){
 			console.log('setConfig');
@@ -94,7 +95,7 @@
 				url:"/weatherWatch/services/forecast/config",
 				type: "POST",
 				data: {
-					'location': $('[name=location]').val(),
+					'zip': $('[name=zip]').val(),
 					'provider': $('[name=provider]:checked').val()
 				},
 				dataType:'json',
@@ -112,8 +113,8 @@
 				type: "GET",
 				dataType:'json',
 				success: function(json){
-					console.log(json.location, json.provider);
-					$('[name=location]').val(json.location);
+					console.log(json.zip, json.provider);
+					$('[name=zip]').val(json.zip);
 					$('[name=provider]').filter('[value='+json.provider+']').prop('checked',true);
 				}
 			});
