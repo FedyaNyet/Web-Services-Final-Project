@@ -24,7 +24,9 @@ public class ForecastService {
 	@GET
    	@Produces(MediaType.APPLICATION_JSON)
 	public Forecast getForcast(){
-		return ForecastFactory.getForcast(this.provider, this.zip);
+		Forecast forcast = ForecastFactory.getForecast(this.provider, this.zip);
+		System.out.println("GOT"+forcast);
+		return forcast;
 	}
 	
 	@GET

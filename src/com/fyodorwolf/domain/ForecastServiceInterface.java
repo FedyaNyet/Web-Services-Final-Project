@@ -5,6 +5,6 @@ import java.net.URL;
 
 public interface ForecastServiceInterface {
 
-	public Forecast getforcast(String Location);
-	public URL getUrl(String zip) throws MalformedURLException ;
+	public Forecast getForecast(String Location);
+	public URL getUrl(String zip) throws MalformedURLException;
 }

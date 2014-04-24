@@ -1,21 +1,27 @@
 package com.fyodorwolf.domain;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 
-import javax.xml.bind.annotation.XmlRootElement;
-
-@XmlRootElement(name = "forecast")
 public class Forecast {
-
-	HashMap<String, String> forecast = new HashMap<String, String>();
+	
+	public String units = "C";
+	public ArrayList<Outlook> forecast = new ArrayList<Outlook>();
 	
 	public Forecast(){}
 	
-	public HashMap<String, String> getForcast(){
+	public ArrayList<Outlook> getForecast(){
 		return forecast;
 	}
-	public void  setForcast(HashMap<String, String> forecast){
-		this.forecast = forecast;
+	
+	public void addDay(Outlook outlook){
+		forecast.add(outlook);
 	}
 	
+	public String toString(){
+		String ret = "units:"+units+"\n";
+		for(Outlook outlook : forecast){
+			ret += outlook.toString() +"\n";
+		}
+		return ret;
+	}
 }
