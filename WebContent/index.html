@@ -58,6 +58,10 @@
 			Weather Channel<input name="provider" type="radio" value="WCService"/>
 			Yahoo Weather<input name="provider" type="radio" value="YWService"/><br/>
 		</div>
+		<div>
+			&deg;C<input name="units" type="radio" value="C"/>
+			&deg;F<input name="units" type="radio" value="F"/><br/>
+		</div>
 	</header>
 	<main>
 		<div id="map-canvas"></div>
@@ -96,7 +100,8 @@
 				type: "POST",
 				data: {
 					'zip': $('[name=zip]').val(),
-					'provider': $('[name=provider]:checked').val()
+					'provider': $('[name=provider]:checked').val(),
+					'units': $('[name=units]:checked').val()
 				},
 				dataType:'json',
 				success: function(json){
@@ -113,9 +118,9 @@
 				type: "GET",
 				dataType:'json',
 				success: function(json){
-					console.log(json.zip, json.provider);
 					$('[name=zip]').val(json.zip);
 					$('[name=provider]').filter('[value='+json.provider+']').prop('checked',true);
+					$('[name=units]').filter('[value='+json.units+']').prop('checked',true);
 				}
 			});
 		}
@@ -127,6 +132,15 @@
 				type : "GET",
 				success : function(xml) {
 					console.log(xml);
+					var result = "";
+					for(var a = 0; a<xml.forecast.length; a++ ){
+						var outlook = xml.forecast[a];
+						result += outlook.day + " - ";
+						result += outlook.highTemp + " - ";
+						result += outlook.lowTemp + " - ";
+						result += outlook.condition + "<br/>";
+					}
+					$('#map-canvas').html(result);
 				}
 			});
 		}

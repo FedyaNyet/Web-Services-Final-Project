@@ -8,16 +8,26 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-public class WCService implements ForecastServiceInterface{
+public class WCService implements ExtForecastService{
 
+	private String units = "C";
 	private static String AUTH_KEY = "6c677a834fab12d1";
 	private static String BASE_URL = "http://api.wunderground.com/api/";
 	
 	@Override
-	public Forecast getForecast(String zip) {
-		System.out.println(getUrl(zip));
-		Forecast forecast = makeForecast(ForecastFactory.getDoc(getUrl(zip)));
+	public Forecast getForecast(String zip, String units) {
+		this.units = units;
+		System.out.println("myUnits"+this.units);
+		
+		URL url = getUrl(zip);
+		System.out.println(url);
+		Forecast forecast = makeForecast( ForecastFactory.getDoc(url) );
 		return forecast;
+	}
+	
+	@Override
+	public URL getUrl(String zip, String units){
+		return this.getUrl(zip);
 	}
 
 	private Forecast makeForecast(Document doc) {
@@ -42,12 +52,12 @@ public class WCService implements ForecastServiceInterface{
 	                			if (forecastdaysNode.getNodeType() == Node.ELEMENT_NODE) {
 	                				Element forecastdaysElement = (Element) forecastdaysNode;
 	                				NodeList forecastday = forecastdaysElement.getElementsByTagName("forecastday");
-	                				for (int d = 0; d < forecastday.getLength(); d++) {
+	                				for (int d = 0; d < forecastday.getLength() && d<5; d++) {
 	                					Node forecastdayNode = forecastday.item(d);
 	                					if (forecastdayNode.getNodeType() == Node.ELEMENT_NODE) {
 	                						
 	                						Element forecastdayElement = (Element) forecastdayNode;
-	                						Outlook outlook = new Outlook();
+	                						ForecastDay outlook = new ForecastDay();
 	                						
 											NodeList date = forecastdayElement.getElementsByTagName("date");
 											for (int e = 0; e < date.getLength(); e++) {
@@ -55,7 +65,7 @@ public class WCService implements ForecastServiceInterface{
 												if (dateNode.getNodeType() == Node.ELEMENT_NODE) {
 													Element dateElement = (Element) dateNode;
 													NodeList weekday = dateElement.getElementsByTagName("weekday");
-													outlook.day = ((Element) weekday.item(0)).getTextContent();
+													outlook.setDay( ((Element) weekday.item(0)).getTextContent() );
 												}
 											}
 											
@@ -64,8 +74,10 @@ public class WCService implements ForecastServiceInterface{
                                             	Node highNode = high.item(f); 
 	                                            if (highNode.getNodeType() == Node.ELEMENT_NODE) {
 	                                                Element highElement = (Element) highNode;
-	                                                NodeList celsius = highElement.getElementsByTagName("celsius");
-	                                                String higT = ((Element) celsius.item(0)).getTextContent();
+	                                                String higT = highElement.getElementsByTagName("celsius").item(0).getTextContent();
+	                                                if(this.units.equals("F")){
+	                                                	higT = highElement.getElementsByTagName("fahrenheit").item(0).getTextContent();
+	                                                }
 	                                                outlook.highTemp = Integer.parseInt(higT);
 	                                            }
                                             }
@@ -75,8 +87,10 @@ public class WCService implements ForecastServiceInterface{
                                             	Node lowNode = low.item(g); 
 	                                            if (lowNode.getNodeType() == Node.ELEMENT_NODE) {
 	                                                Element lowElement = (Element) lowNode;
-	                                                NodeList celsius = lowElement.getElementsByTagName("celsius");
-	                                                String lowT = ((Element) celsius.item(0)).getTextContent();
+	                                                String lowT = lowElement.getElementsByTagName("celsius").item(0).getTextContent();
+	                                                if(this.units.equals("F")){
+	                                                	lowT = lowElement.getElementsByTagName("fahrenheit").item(0).getTextContent();
+	                                                }
 	                                                outlook.lowTemp = Integer.parseInt(lowT);
 	                                            }
 	                                        }
@@ -84,10 +98,7 @@ public class WCService implements ForecastServiceInterface{
                                             NodeList conditions = forecastdayElement.getElementsByTagName("conditions");
                                             String con = ((Element) conditions.item(0)).getTextContent();
                                             outlook.condition = con;
-//                                        
-//                                            NodeList avehumidity = forecastdayElement.getElementsByTagName("avehumidity");
-//                                            Element ave = (Element) avehumidity.item(0);
-//                                            System.out.println("avehumidity: " + ave.getTextContent());
+                                            
                                             
                                             forecast.addDay(outlook);
                                   		}
@@ -104,10 +115,9 @@ public class WCService implements ForecastServiceInterface{
 		return forecast;
 	}
 
-	@Override
-	public URL getUrl(String zip){
+	private URL getUrl(String zip){
 		try{
-			return new URL(BASE_URL + AUTH_KEY + "/forecast/q/" + zip + ".xml");
+			return new URL(BASE_URL + AUTH_KEY + "/forecast10day/q/" + zip + ".xml");
 		}
 		catch(MalformedURLException e){
 			e.printStackTrace();

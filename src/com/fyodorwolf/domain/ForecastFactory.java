@@ -12,19 +12,23 @@ public class ForecastFactory {
 
 	public static final int WEATHER_CHANNEL = 0;
 	public static final int YAHOO_WEATHER = 1;
-	public static final String[] providers = {"WCService", "YWService"};
+	public static final int GRAPHIC_WEATHER = 2;
+	public static final String[] providers = {"WCService", "YWService", "GWService"};
 			
-	public static Forecast getForecast(int serviceProvider, String zip){
-		ForecastServiceInterface extForcastService;
+	public static ExtForecastService getServiceProvider(int serviceProvider){
+		ExtForecastService extForcastService;
 		switch(serviceProvider){
 		case YAHOO_WEATHER:
 			extForcastService = new YWService();
 			break;
-		default:
+		case WEATHER_CHANNEL:
 			extForcastService = new WCService();
 			break;
+		default:
+			extForcastService = new GWService();
+			break;
 		}
-		return extForcastService.getForecast(zip);
+		return extForcastService;
 	}
 
 	public static Document getDoc(URL url) {

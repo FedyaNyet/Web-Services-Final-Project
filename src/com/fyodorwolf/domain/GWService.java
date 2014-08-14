@@ -7,7 +7,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
 
-public class YWService implements ExtForecastService{
+public class GWService implements ExtForecastService{
 
 	public static String BASE_URL = "http://weather.yahooapis.com/forecastrss?p=";
 	
